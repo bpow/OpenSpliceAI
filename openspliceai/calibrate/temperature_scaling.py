@@ -137,7 +137,7 @@ class ModelWithTemperature(nn.Module):
         # Optimize the temperature vector
         optimizer = torch.optim.Adam([self.temperature], lr=0.01)
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-            optimizer, mode='min', factor=0.1, patience=2, verbose=True)
+            optimizer, mode='min', factor=0.1, patience=2)
 
         best_loss = float('inf')
         best_temp = self.temperature.data.clone()
