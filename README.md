@@ -73,6 +73,15 @@ Annotates VCF files with delta scores and positions to evaluate the impact of ge
 <p>To try the in-development <strong>devel</strong> build (latest features, pre-release &mdash; currently <code>0.0.8.dev0</code>):</p>
 <pre><code>pip install "git+https://github.com/Kuanhao-Chao/OpenSpliceAI.git@devel"</code></pre>
 <p>See the <a class="reference external" href="https://ccb.jhu.edu/openspliceai/content/installation.html#installation">Installation Guide</a> for GPU/CUDA setup, the devel/editable workflow, and other options.</p>
+<p><strong>Container image</strong> (built from the current checkout &mdash; check out a release tag first for a release image; <code>docker</code> works the same as <code>podman</code>):</p>
+<pre><code>podman build -t openspliceai:pytorch .                     # CUDA PyTorch
+podman build --build-arg KERAS=1 -t openspliceai:keras .   # + TensorFlow for variant --model-type keras
+podman build --build-arg TORCH_VARIANT=cpu -t openspliceai:cpu .
+
+podman run --rm --device nvidia.com/gpu=all -v "$PWD":/work openspliceai:pytorch \
+    predict --model /opt/openspliceai/models/openspliceai-mane/10000nt --flanking-size 10000 \
+    --input-sequence input.fa --output-dir out</code></pre>
+<p>The image includes <code>models/</code> and <code>data/</code> under <code>/opt/openspliceai</code> (<code>$OPENSPLICEAI_MODELS</code>). GPU runs need the NVIDIA container toolkit on the host (<code>--gpus all</code> with docker). Run <code>git lfs pull</code> before building if you need the LFS-tracked <code>models/spliceai/SpliceAI_models/*.h5</code>. The <code>KERAS=1</code> image bundles the original SpliceAI weights, which are licensed CC BY-NC 4.0.</p>
 <div class="line-block">
 <div class="line"><br></div>
 </div>

@@ -127,4 +127,11 @@ directory). `mane` is the human GRCh38/MANE model. `models/spliceai/` holds the 
   databases (`*.gff_db`) and `examples/data/*` genomes are large local artifacts, not committed.
 - The hyperparameter table duplication (see Architecture) is the most common source of subtle bugs — a change in one
   subcommand's `(W, AR, BATCH_SIZE)` must be mirrored in the others.
+- **Docker** (`Dockerfile`, `.dockerignore`): micromamba + conda-forge/bioconda; CUDA comes from conda packages
+  (no nvidia base image). `--build-arg KERAS=1` adds TensorFlow in the *same* solve (a stacked stage would
+  re-solve/downgrade torch and duplicate the layer); `TORCH_VARIANT=cpu` for CPU builds. The package is installed
+  **editable** at `/opt/openspliceai` so `_resolve_default_spliceai_models` finds `models/` there. The conda dep
+  list mirrors `conda-recipe/meta.yaml`; `pip check` fails the build on drift from `setup.py`. Keras image uses
+  `tf-keras` + `TF_USE_LEGACY_KERAS=1` and links Illumina `spliceai`'s weights to `SpliceAI_models_release`.
+  Podman's OCI format ignores micromamba's activating `SHELL`, hence the explicit `PATH`.
 - Full user docs (Sphinx) are in `docs/source/` and hosted at https://ccb.jhu.edu/openspliceai/.
