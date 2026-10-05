@@ -1,0 +1,12 @@
+*
+!setup.py
+!README.md
+!MANIFEST.in
+!LICENSE
+!openspliceai/
+!models/
+!data/
+**/__pycache__
+**/*.pyc
+openspliceai.egg-info
+models/prev
