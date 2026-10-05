@@ -40,7 +40,8 @@ CUDA_VISIBLE_DEVICES="" $ENV/python -m pytest --cov=openspliceai --cov-report=te
 $ENV/ruff check openspliceai tests          # lint (clean)
 ```
 `KNOWN_ISSUES.md` documents deferred behavior-changing issues and two audit *false positives* locked by regression
-tests. There is no CI workflow (lint/tests run locally / via pre-commit).
+tests. There is no test CI (lint/tests run locally / via pre-commit); the only workflow is
+`.github/workflows/docker.yml`, which publishes CUDA images to ghcr.io (see Docker below).
 
 ## Architecture
 
@@ -134,4 +135,6 @@ directory). `mane` is the human GRCh38/MANE model. `models/spliceai/` holds the 
   list mirrors `conda-recipe/meta.yaml`; `pip check` fails the build on drift from `setup.py`. Keras image uses
   `tf-keras` + `TF_USE_LEGACY_KERAS=1` and links Illumina `spliceai`'s weights to `SpliceAI_models_release`.
   Podman's OCI format ignores micromamba's activating `SHELL`, hence the explicit `PATH`.
+  CI: `.github/workflows/docker.yml` publishes the CUDA pytorch image (amd64+arm64) to ghcr.io on pushes to
+  `main`/`devel` and `v*` tags; it checks out without LFS. Keras images are local-build only.
 - Full user docs (Sphinx) are in `docs/source/` and hosted at https://ccb.jhu.edu/openspliceai/.
